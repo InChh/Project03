@@ -24,7 +24,9 @@ public class TSUtility {
             if (c != '1' && c != '2' &&
                     c != '3' && c != '4') {
                 System.out.print("选择错误，请重新输入：");
-            } else break;
+            } else {
+                break;
+            }
         }
         return c;
     }
@@ -40,7 +42,6 @@ public class TSUtility {
     }
 
     /**
-     * @return
      * @Description 该方法从键盘读取一个长度不超过2位的整数，并将其作为方法的返回值。
      * @author shkstart
      * @date 2019年2月12日上午12:04:04
@@ -85,8 +86,11 @@ public class TSUtility {
         while (scanner.hasNextLine()) {
             line = scanner.nextLine();
             if (line.length() == 0) {
-                if (blankReturn) return line;
-                else continue;
+                if (blankReturn) {
+                    return line;
+                } else {
+                    continue;
+                }
             }
 
             if (line.length() < 1 || line.length() > limit) {
