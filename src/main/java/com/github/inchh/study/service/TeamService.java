@@ -21,7 +21,7 @@ public class TeamService {
      */
     public static int memberIdGener = 1;
     /**
-     * 存储员工对象的数组
+     * 存储员工对象
      */
     public ArrayList<Programmer> teamMembers = new ArrayList<>(MAX_MEMBER_COUNT);
 
@@ -38,24 +38,32 @@ public class TeamService {
      * 向团队中添加员工
      *
      * @param employee 加入团队的员工对象
-     * @throws TeamException 团队已满、将普通员工添加到团队时抛出
+     * @throws TeamException
      */
     public void addTeamMember(Employee employee) throws TeamException {
         if (teamMembers.size() == MAX_MEMBER_COUNT) {
             throw new TeamException("团队已满，无法添加新成员");
         }
         if (employee instanceof Programmer p) {
+            if (p.getStatus() == Status.BUSY) {
+                throw new TeamException("该员工已是某团队成员");
+            }
+            if (p.getStatus() == Status.VOCATION) {
+                throw new TeamException("该员工正在休假，无法添加");
+            }
             p.setMemberId(memberIdGener++);
+            p.setStatus(Status.BUSY);
             teamMembers.add(p);
+        } else {
+            throw new TeamException("该成员不是开发人员，无法添加");
         }
-        throw new TeamException("无法将普通员工添加到团队");
     }
 
     /**
      * 从队伍中删除指定员工
      *
      * @param employee 离开团队的员工对象
-     * @throws TeamException 团队中无指定员工时抛出
+     * @throws TeamException
      */
     public void removeTeamMember(Employee employee) throws TeamException {
         if (employee instanceof Programmer p) {
