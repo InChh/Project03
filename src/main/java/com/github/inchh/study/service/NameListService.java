@@ -2,7 +2,8 @@ package com.github.inchh.study.service;
 
 import com.github.inchh.study.base.*;
 
-public class NameListService {
+public class NameListService implements java.io.Serializable {
+    public static final long serialVersionUID = 53434558833332L;
     private final Employee[] employees;
 
     public NameListService() {

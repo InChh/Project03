@@ -16,7 +16,8 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Builder
 @Accessors(chain = true)
-public class NoteBook implements Equipment {
+public class NoteBook implements Equipment, java.io.Serializable {
+    public static final long serialVersionUID = 34783473434L;
     /**
      * 笔记本型号
      */

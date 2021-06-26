@@ -6,6 +6,7 @@ import com.github.inchh.study.service.NameListService;
 import com.github.inchh.study.service.TeamException;
 import com.github.inchh.study.service.TeamService;
 
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -14,19 +15,49 @@ import java.util.ArrayList;
  * @author In_Chh
  */
 public class TeamView {
-    private static final NameListService nameListService = new NameListService();
-    private static final TeamService teamService = new TeamService();
-    private static final Employee[] employees = nameListService.getAllEmployees();
-    private static final ArrayList<Programmer> teamMembers = teamService.getTeamMembers();
+    private static NameListService nameListService;
+    private static TeamService teamService;
+    private static Employee[] employees;
+    private static ArrayList<Programmer> teamMembers;
 
-    public static void showNameList() {
+    /**
+     * 初始化程序，读取文件
+     */
+    public void init() {
+        File file = new File("info.dat");
+        if (file.exists()) {
+            ObjectInputStream ois = null;
+            try {
+                ois = new ObjectInputStream(new FileInputStream(file));
+                nameListService = (NameListService) ois.readObject();
+                teamService = (TeamService) ois.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                if (ois != null) {
+                    try {
+                        ois.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else {
+            nameListService = new NameListService();
+            teamService = new TeamService();
+        }
+        employees = nameListService.getAllEmployees();
+        teamMembers = teamService.getTeamMembers();
+    }
+
+    public void showNameList() {
         for (var e : employees) {
             System.out.println(e);
         }
 
     }
 
-    public static void showMenu() {
+    public void showMenu() {
         System.out.println("-------------------------------------开发团队调度软件--------------------------------------");
         System.out.println("ID\t姓名\t年龄\t工资\t职位\t状态\t奖金\t股票\t领用设备");
         showNameList();
@@ -34,7 +65,7 @@ public class TeamView {
         System.out.println("1-团队列表\t2-添加团队成员\t3-删除团队成员\t4-退出\t请选择(1-4)：");
     }
 
-    public static void showTeamMembers() {
+    public void showTeamMembers() {
         System.out.println("--------------------团队成员列表---------------------");
         if (!teamMembers.isEmpty()) {
             System.out.println("TID/ID\t姓名\t年龄\t工资\t职位\t状态\t奖金\t股票\t领用设备");
@@ -47,7 +78,7 @@ public class TeamView {
         }
     }
 
-    public static void addTeamMember() {
+    public void addTeamMember() {
         System.out.println("---------------------添加成员---------------------");
         System.out.println("请输入要添加的员工ID：");
         int id = TSUtility.readInt();
@@ -60,42 +91,39 @@ public class TeamView {
             }
             //将该职员添加到团队中
             teamService.addTeamMember(employee);
-            System.out.println("添加成功");
+            System.out.println("添加成功^_^");
         } catch (TeamException e) {
-            System.out.println("添加失败，原因：" + e.getMessage());
+            System.out.println("添加失败ε=(´ο｀*))) 原因：" + e.getMessage());
         }
     }
 
-    public static void main(String[] args) {
-        //进入消息循环
-        while (true) {
-            //显示菜单
-            showMenu();
-            //读取用户输入
-            char selection = TSUtility.readMenuSelection();
-            //执行相应方法
-            switch (selection) {
-                case '1':
-                    showTeamMembers();
-                    TSUtility.readReturn();
-                    break;
-                case '2':
-                    addTeamMember();
-                    TSUtility.readReturn();
-                    break;
-                case '3':
-                    TSUtility.readReturn();
-                    break;
-                case '4':
-                    System.out.println("确认退出？（Y/N）：");
-                    if (TSUtility.readConfirmSelection() == 'Y') {
-                        System.out.println("拜了个拜┏(＾0＾)┛");
-                        return;
-                    }
-                    System.out.println("输错了吧o(*￣︶￣*)o");
-                    break;
-                default:
-            }
+    public void deleteTeamMember() {
+        System.out.println("---------------------删除成员---------------------");
+        System.out.println("请输入要删除的员工ID：");
+        int id = TSUtility.readInt();
+        try {
+            Employee employee = nameListService.getEmployee(id);
+            teamService.removeTeamMember(employee);
+            System.out.println("删除成功^_^");
+        } catch (TeamException e) {
+            System.out.println("删除失败ε=(´ο｀*))) 原因：" + e.getMessage());
         }
+
+    }
+
+    /**
+     * 将程序状态保存到文件
+     */
+    public void save() {
+        ObjectOutputStream objectOutputStream = null;
+        try {
+            objectOutputStream = new ObjectOutputStream(new FileOutputStream("info.dat"));
+            objectOutputStream.writeObject(nameListService);
+            objectOutputStream.writeObject(teamService);
+            objectOutputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

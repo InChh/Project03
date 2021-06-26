@@ -16,7 +16,8 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class Pc implements Equipment {
+public class Pc implements Equipment, java.io.Serializable {
+    public static final long serialVersionUID = 4893242342424L;
     /**
      * PC型号
      */

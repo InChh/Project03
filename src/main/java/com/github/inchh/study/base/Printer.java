@@ -16,7 +16,8 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Builder
 @Accessors(chain = true)
-public class Printer implements Equipment {
+public class Printer implements Equipment, java.io.Serializable {
+    public static final long serialVersionUID = -23943929423523L;
     /**
      * 打印机名称
      */

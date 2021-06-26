@@ -10,7 +10,8 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class Employee {
+public class Employee implements java.io.Serializable {
+    public static final long serialVersionUID = -124349599434444L;
     private int id;
     private String name;
     private int age;

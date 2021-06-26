@@ -11,7 +11,8 @@ import java.util.ArrayList;
  *
  * @author In_Chh
  */
-public class TeamService {
+public class TeamService implements java.io.Serializable {
+    public static final long serialVersionUID = 9877662399444224L;
     /**
      * 最大员工数量
      */
@@ -68,8 +69,12 @@ public class TeamService {
     public void removeTeamMember(Employee employee) throws TeamException {
         if (employee instanceof Programmer p) {
             if (!teamMembers.remove(p)) {
-                throw new TeamException("删除失败！团队中无此员工");
+                throw new TeamException("团队中无此员工");
+            } else {
+                p.setStatus(Status.FREE);
             }
+        } else {
+            throw new TeamException("团队中无此员工");
         }
     }
 
